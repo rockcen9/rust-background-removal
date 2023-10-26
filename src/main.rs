@@ -20,7 +20,7 @@ struct App {
         short = 'I',
         long,
         value_name = "INPUT_FOLDER",
-        default_value = "images"
+        default_value = r"D:\Desktop\import_aseprite"
     )]
     input_images_folder: String,
     #[clap(short, long, value_name = "OUTPUT_FILE", default_value = "")]
@@ -91,7 +91,7 @@ fn main() -> Result<()> {
 
     // Input image file folder path
     let input_images_folder = Path::new(&args.input_images_folder);
-    let output_images_folder = Path::new("output_images");
+    let output_images_folder = Path::new(&args.input_images_folder);
     fs::create_dir_all(&output_images_folder)?;
 
     let image_files: Vec<PathBuf>;
@@ -134,6 +134,13 @@ fn main() -> Result<()> {
             elapsed_time.as_secs(),
             elapsed_time.subsec_millis()
         );
+
+
+        match fs::remove_file(input_img_file) {
+            Ok(_) => {},
+            Err(e) => println!("Error deleting the file: {}", e),
+        }
+
         if args.crop {
             let alpha_bounds = find_alpha_bounds(&output_img);
 
